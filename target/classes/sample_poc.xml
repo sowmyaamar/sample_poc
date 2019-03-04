@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+<mule xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:spring="http://www.springframework.org/schema/beans" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
@@ -12,12 +12,15 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd">
     <flow name="getAllAccountswithPostalCodeFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/sfdc" allowedMethods="GET" doc:name="HTTP"/>
-        <sfdc:query config-ref="Salesforce__Basic_Authentication" query="dsql:SELECT AccountNumber,BillingPostalCode,BillingState,BillingStreet,Id,Industry,Name,ParentId,Phone FROM Account WHERE BillingPostalCode = '27215'" fetchSize="1000" accessTokenId="hKbolOBZGoLNBzmap9yCAANJA" doc:name="Salesforce"/>
-        <dw:transform-message doc:name="Transform Message">
+        <sfdc:query config-ref="Salesforce__Basic_Authentication" query="dsql:SELECT AccountId,FirstName,Name,Phone FROM Contact WHERE Phone = '1234567890'" fetchSize="1000" accessTokenId="hKbolOBZGoLNBzmap9yCAANJA" doc:name="Salesforce"/>
+        <dw:transform-message doc:name="Transform Message" metadata:id="c2021e5a-fbab-4029-bc93-d1f15c85c44b">
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/json
 ---
-payload]]></dw:set-payload>
+{
+	account:payload
+	
+	}]]></dw:set-payload>
         </dw:transform-message>
         <json:json-to-xml-transformer doc:name="JSON to XML"/>
         <logger level="INFO" doc:name="Logger"/>
